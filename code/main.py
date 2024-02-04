@@ -260,13 +260,25 @@ class NPC:
         if self.npc_type == 'leader':
             # Implement leadership logic here
             pass
+    
+    def gather(self, farm_tiles, click_pos, resources):
+        # Convert click position to tile coordinates
+        click_x, click_y = click_pos[0] // TILE_SIZE, click_pos[1] // TILE_SIZE
+
+        # Check if there's a farm tile at the clicked position
+        farm_tile = next((tile for tile in farm_tiles if tile.x == click_x and tile.y == click_y), None)
+        if farm_tile and farm_tile.stage == 2:
+            # Gather the farm tile
+            resources[farm_tile.crop_type] += 1  # Update resources
+            print(f"Gathered {farm_tile.crop_type}")
+            farm_tiles.remove(farm_tile)  # Remove the gathered tile
 
     def farm(self, farm_tiles, click_pos, resources):
         if self.npc_type != 'farmer':
             return
 
         # Define the vegetables list
-        vegetables = ['Carrots']  # Only allow planting carrots
+        vegetables = ['Wheat']  # Only allow planting wheat for now
 
         # Convert click position to tile coordinates
         click_x, click_y = click_pos[0] // TILE_SIZE, click_pos[1] // TILE_SIZE
@@ -376,17 +388,19 @@ def game_loop():
                             break
 
                 # Right-click to mine, if the selected NPC is a miner
-                elif event.button == 3 and npcs[selected_npc].npc_type == 'miner':
-                    # Find the leader NPC
-                    leader = next((npc for npc in npcs if npc.npc_type == 'leader'), None)
+                elif event.button == 3:
+                    if npcs[selected_npc].npc_type == 'miner':
+                        # Find the leader NPC
+                        leader = next((npc for npc in npcs if npc.npc_type == 'leader'), None)
 
-                    # Perform mining action, passing the leader NPC and mouse position
-                    npcs[selected_npc].mine(ore_tiles, leader, mouse_pos)
+                        # Perform mining action, passing the leader NPC and mouse position
+                        npcs[selected_npc].mine(ore_tiles, leader, mouse_pos)
 
-                elif event.button == 3 and npcs[selected_npc].npc_type == 'farmer':
-                    mouse_pos = event.pos
-                    npcs[selected_npc].farm(farm_tiles, mouse_pos, resources)
+                    elif npcs[selected_npc].npc_type == 'farmer':
+                        npcs[selected_npc].farm(farm_tiles, mouse_pos, resources)
 
+                    # All NPCs can gather
+                    npcs[selected_npc].gather(farm_tiles, mouse_pos, resources)
             # Handling key presses for movement
             if event.type == pygame.KEYDOWN:
                 # Cycle through NPCs with the spacebar
