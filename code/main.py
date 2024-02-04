@@ -186,9 +186,15 @@ def draw_resource_panel(screen, resources, x, y, width, height):
 
     # Display each resource and its amount
     font = pygame.font.SysFont(None, 24)
-    for i, (resource, amount) in enumerate(resources.items()):
+    line_counter = 0
+    for resource, amount in resources.items():
+        # Skip resources with a quantity of 0
+        if amount == 0:
+            continue
+
         text = font.render(f"{resource}: {amount}", True, WHITE)
-        screen.blit(text, (x + 10, y + 10 + i * 30))
+        screen.blit(text, (x + 10, y + 10 + line_counter * 30))
+        line_counter += 1
 
 # NPCs
 class NPC:
@@ -275,11 +281,24 @@ class NPC:
 
         if existing_tile:
             if existing_tile.stage == 2:  # Ripe for harvesting
-                resources['Wheat'] += 1  # Add wheat to resources
+                resources[existing_tile.crop_type] += 1  # Add crop to resources
                 farm_tiles.remove(existing_tile)  # Remove the tile
         else:
-            # Plant new farm tile
-            farm_tiles.append(FarmTile(click_x, click_y))
+            # Display menu for selecting what to plant
+            print("Select a crop to plant:")
+            for i, crop in enumerate(self.vegetables):
+                print(f"{i + 1}. {crop}")
+
+            # Get player's selection
+            selection = int(input("Enter the number of the crop you want to plant: ")) - 1
+
+            # Check if the selection is valid
+            if selection < 0 or selection >= len(self.vegetables):
+                print("Invalid selection.")
+                return
+
+            # Plant new farm tile with the selected crop
+            farm_tiles.append(FarmTile(click_x, click_y, self.vegetables[selection]))
     
     def is_clicked(self, mouse_pos):
         # Check if the mouse click is within the NPC's tile
