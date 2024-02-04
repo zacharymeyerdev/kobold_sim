@@ -152,9 +152,10 @@ class OreTile:
             pygame.draw.circle(screen, self.color, (speckle_x, speckle_y), 2)
 
 class FarmTile:
-    def __init__(self, x, y):
+    def __init__(self, x, y, crop_type='Wheat'):
         self.x = x
         self.y = y
+        self.crop_type = crop_type
         self.stage = 0  # Represents the growth stage (0: Soil, 1: Growing, 2: Ripe)
         self.color = LIGHT_BROWN  # Initial color for soil
         self.last_update_time = pygame.time.get_ticks()  # Get the initial time
@@ -264,6 +265,9 @@ class NPC:
         if self.npc_type != 'farmer':
             return
 
+        # Define the vegetables list
+        vegetables = ['Carrots']  # Only allow planting carrots
+
         # Convert click position to tile coordinates
         click_x, click_y = click_pos[0] // TILE_SIZE, click_pos[1] // TILE_SIZE
 
@@ -284,32 +288,19 @@ class NPC:
                 resources[existing_tile.crop_type] += 1  # Add crop to resources
                 farm_tiles.remove(existing_tile)  # Remove the tile
         else:
-            # Display menu for selecting what to plant
-            print("Select a crop to plant:")
-            for i, crop in enumerate(self.vegetables):
-                print(f"{i + 1}. {crop}")
-
-            # Get player's selection
-            selection = int(input("Enter the number of the crop you want to plant: ")) - 1
-
-            # Check if the selection is valid
-            if selection < 0 or selection >= len(self.vegetables):
-                print("Invalid selection.")
-                return
-
-            # Plant new farm tile with the selected crop
-            farm_tiles.append(FarmTile(click_x, click_y, self.vegetables[selection]))
-    
+            # Plant new farm tile with the selected crop (Carrots)
+            farm_tiles.append(FarmTile(click_x, click_y, vegetables[0]))
+        
     def is_clicked(self, mouse_pos):
         # Check if the mouse click is within the NPC's tile
         rect = pygame.Rect(self.x * TILE_SIZE, self.y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
         return rect.collidepoint(mouse_pos)
-    
+        
     def draw(self):
         # Make the NPC a bit smaller than the tile
         padding = 10  # Increase padding to make the NPC smaller
         npc_rect = pygame.Rect(self.x * TILE_SIZE + padding, self.y * TILE_SIZE + padding, 
-                               TILE_SIZE - 2 * padding, TILE_SIZE - 2 * padding)
+                                TILE_SIZE - 2 * padding, TILE_SIZE - 2 * padding)
 
         pygame.draw.rect(screen, self.color, npc_rect)
 
