@@ -1,51 +1,37 @@
-# building.py
-
-# This module would define the buildings in your colony game.
-# Each building could have attributes like cost, resource production/consumption, etc.
-
 class Building:
     def __init__(self, name, cost, production_rate, consumption_rate):
-        """
-        Initialize a new building.
-
-        :param name: str - The name of the building.
-        :param cost: dict - The cost to build this building, in resources.
-        :param production_rate: dict - The rate of resource production per cycle.
-        :param consumption_rate: dict - The rate of resource consumption per cycle.
-        """
         self.name = name
         self.cost = cost
         self.production_rate = production_rate
         self.consumption_rate = consumption_rate
 
     def produce_resources(self):
-        """
-        Produce resources at the building's production rate.
-        This method would be called every game cycle to update resources.
-        """
-        # Logic to produce resources
-        pass
+        pass  # Logic to produce resources
 
     def consume_resources(self):
-        """
-        Consume resources at the building's consumption rate.
-        This method would be called every game cycle to update resources.
-        """
-        # Logic to consume resources
-        pass
+        pass  # Logic to consume resources
 
-    # Additional methods can be added here for building functionality.
-    # For example, upgrade_building(), repair_building(), etc.
+# General Building Types
+class Mine(Building):
+    def __init__(self, name, cost, production_rate, consumption_rate):
+        super().__init__(name, cost, production_rate, consumption_rate)
+        # Specific implementation for a Mine
 
-# You can also define specific building types by inheriting from the Building class.
-# class Farm(Building):
-#     def __init__(self, ...):
-#         super().__init__(...)
-#         # Additional attributes or methods specific to Farm
+class Farm(Building):
+    def __init__(self, name, cost, production_rate, consumption_rate):
+        super().__init__(name, cost, production_rate, consumption_rate)
+        # Specific implementation for a Farm
 
-# class Factory(Building):
-#     def __init__(self, ...):
-#         super().__init__(...)
-#         # Additional attributes or methods specific to Factory
+# ... (Continue for other general building types)
 
-# This modular approach allows for easy expansion and customization of different building types.
+# Tribe-Specific Building Types
+class LavaForge(Building):
+    def __init__(self, name, cost, production_rate, consumption_rate):
+        super().__init__(name, cost, production_rate, consumption_rate)
+        # Specific implementation for Lava Forge (Flameclaw Tribe)
+
+# ... (Continue for other tribe-specific building types)
+
+# Implementations for other buildings like Forestry, Housing, Storage, etc., 
+# along with tribe-specific buildings like TrapWorkshop, AerieTower, etc., 
+# should follow the same pattern, with customized attributes and functionalities.
